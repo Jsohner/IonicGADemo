@@ -132,8 +132,8 @@ angular.module('ionicApp', ['ionic'])
          {
              token: "xoxp-6261658387-6261658403-6272659622-7f1736",
              channel: "C067PK2U8",
-             text: player.FirstName.toString() + " just scored a point! Woohoo!",
-             username: "John Is a Robot"
+             text: "Robot John is dead. All hail Miketron", //player.FirstName.toString() + " just scored a point! Woohoo!",
+             username: "Miketron"
          };
 
         $.ajax({
