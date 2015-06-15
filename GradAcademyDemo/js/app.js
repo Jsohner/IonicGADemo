@@ -85,9 +85,14 @@ angular.module('ionicApp', ['ionic'])
 .controller('HomeTabCtrl', function ($scope, $rootScope, playerService) {
     console.log('HomeTabCtrl');
 
+        $scope.yellText = "";
     $scope.vote = playerService.voteForPlayer;
 
     $scope.postToSlack = playerService.postToSlack;
+    $scope.postYellToSlack = playerService.postYellToSlack;
+    $scope.clearYellText = function() {
+        $scope.yellText = "";
+    }
 
 })
 
@@ -165,6 +170,91 @@ angular.module('ionicApp', ['ionic'])
         });
     }
 
+
+    function postYellToSlack(player, yellText) {
+
+        var genderPronoun = "";
+        var possesiveGenderPronoun = "";
+
+        if (player.FirstName == "Katherine" || player.FirstName == "Kat" || player.FirstName == "katherine") {
+            genderPronoun = "she";
+            possesiveGenderPronoun = "her";
+        } else {
+            genderPronoun = "he";
+            possesiveGenderPronoun = "his";
+        }
+
+        var yellVerbs = [
+            "shouted",
+            "screamed",
+            "roared",
+            "shrieked",
+            "groaned",
+            "sang",
+            "muttered",
+            "coughed",
+            "danced",
+            "mouthed",
+            "chirped"
+        ];
+
+        var yellEndings = [
+            "like a howling banshee.",
+            "as " + genderPronoun + " loosened " + possesiveGenderPronoun + "necktie.",
+            "at Jared.",
+            "in a fit of rage.",
+            "in a thick Australian accent.",
+            "just before jumping out of the boat.",
+            "as " + genderPronoun + " breathed " + possesiveGenderPronoun + " last.",
+            "into a supermarket.",
+            "from under " + possesiveGenderPronoun + " bed.",
+            "as " + genderPronoun + " dumped several large salt-water fish from " + possesiveGenderPronoun + " briefcase.",
+            "enthusiastically",
+            "with a hollow tone of remorse",
+            "before " + genderPronoun + " realized " + genderPronoun + " was dreaming.",
+            "before " + genderPronoun + " started to weep.",
+            "looking Voldemort right in the eyes"
+        ];
+
+        var getYellVerb = function() {
+            var verbIndex = Math.floor((Math.random() * yellVerbs.length) + 1);
+            var yellVerb = yellVerbs[verbIndex];
+            return yellVerb;
+        }
+
+        var getYellEnding = function () {
+
+            var yellEnding = "";
+            var addEndingCheck = Math.floor((Math.random() * 3) + 1);
+            if (addEndingCheck > 1) {
+                var endingIndex = Math.floor((Math.random() * yellEndings.length) + 1);
+                yellEnding = yellEndings[endingIndex];
+            }
+            return yellEnding;
+        }
+
+        var yellVerb = getYellVerb();
+        var yellEnding = getYellEnding();
+
+        var objectToPost =
+         {
+             token: "xoxp-6261658387-6261658403-6272659622-7f1736",
+             channel: "C067PK2U8",
+             text: "\"" + yellText.toUpperCase() + "!!!\" " + yellVerb + " " + player.FirstName +" "+ yellEnding,
+             username: player.FirstName,
+             icon_url: "http://store.bbcomcdn.com/images/store/prodimage/prod_prod910018/image_prodprod910018_largeImage_X_450_white.jpg"
+         };
+
+        $.ajax({
+            type: "POST",
+            url: "https://slack.com/api/chat.postMessage",
+            dataType: "application/JSON",
+            data: objectToPost
+
+        });
+    }
+
+
     function getQuestions(callback) {
         var query =
           {
@@ -185,6 +275,7 @@ angular.module('ionicApp', ['ionic'])
         getPlayers: getPlayers,
         voteForPlayer: voteForPlayer,
         postToSlack: postToSlack,
+        postYellToSlack: postYellToSlack,
         getQuestions: getQuestions
     }
 });
