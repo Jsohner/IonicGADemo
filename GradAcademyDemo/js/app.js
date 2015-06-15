@@ -39,6 +39,15 @@ angular.module('ionicApp', ['ionic'])
               }
           }
       })
+    .state('tabs.questions', {
+        url: '/questions',
+        views: {
+            'questions-tab': {
+                templateUrl: 'templates/questions.html',
+                controller: "QuestionsTabCtrl"
+            }
+        }
+    })
       .state('tabs.navstack', {
           url: '/navstack',
           views: {
@@ -109,6 +118,20 @@ angular.module('ionicApp', ['ionic'])
     });
 })
 
+    .controller("QuestionsTabCtrl", function ($scope, $rootScope, playerService) {
+        console.log("QuestionsTabCtrl");
+
+
+        playerService.getQuestions(function(data) {
+            $scope.questions = data.messages;
+        });
+            
+            
+        
+
+
+    })
+
 .constant('API_END_POINT', 'http://hmbgascoreboardserver.azurewebsites.net')
 //.constant('API_END_POINT', 'http://localhost:49376')
 
@@ -132,8 +155,11 @@ angular.module('ionicApp', ['ionic'])
          {
              token: "xoxp-6261658387-6261658403-6272659622-7f1736",
              channel: "C067PK2U8",
-             text: "Robot John is dead. All hail Miketron", //player.FirstName.toString() + " just scored a point! Woohoo!",
-             username: "Miketron"
+             text: "*Robot John is dead. All hail Miketron*\nAnd " + player.FirstName + " _just scored a point._\n And this is some code: ```User john = new User();```", //player.FirstName.toString() + " just scored a point! Woohoo!",
+             username: player.FirstName,
+             icon_url: "http://store.bbcomcdn.com/images/store/prodimage/prod_prod910018/image_prodprod910018_largeImage_X_450_white.jpg",
+             mrkdwn: true,
+             mrkdwn_in: "text"
          };
 
         $.ajax({
@@ -141,14 +167,40 @@ angular.module('ionicApp', ['ionic'])
             url: "https://slack.com/api/chat.postMessage",
             dataType: "application/JSON",
             data: objectToPost
+            
         });
+    }
+
+    function getQuestions(callback) {
+        var query =
+          {
+              token: "xoxp-6261658387-6261658403-6272659622-7f1736",
+              channel: "C067PK2U8"       
+          };
+        
+        $http({
+            method: "GET",
+            url: "https://slack.com/api/channels.history",
+            params: query
+        }).success(callback);
+
+
+       
+
+        //$.ajax({
+        //    type: "GET",
+        //    url: "https://slack.com/api/channels.history",
+        //    dataType: "application/JSON",
+        //    data: query
+        //}).always(callback);
     }
 
     // public api
     return {
         getPlayers: getPlayers,
         voteForPlayer: voteForPlayer,
-        postToSlack: postToSlack
+        postToSlack: postToSlack,
+        getQuestions: getQuestions
     }
 });
 
