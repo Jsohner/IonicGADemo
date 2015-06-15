@@ -48,8 +48,8 @@ angular.module('ionicApp', ['ionic'])
           }
       });
 
-    //window.serverUrl = "http://hmbgascoreboardserver.azurewebsites.net";
-    window.serverUrl = "http://localhost:49376";
+    window.serverUrl = "http://hmbgascoreboardserver.azurewebsites.net";
+    //window.serverUrl = "http://localhost:49376";
 
 
     $urlRouterProvider.otherwise("/sign-in");
@@ -60,8 +60,8 @@ angular.module('ionicApp', ['ionic'])
     this.rootScope = $rootScope;
 
     $scope.user = {}
-
-    playerService.getPlayers(function (data) {
+        
+        playerService.getPlayers(function (data) {
         $scope.players = data;
     });
 
@@ -77,6 +77,9 @@ angular.module('ionicApp', ['ionic'])
     console.log('HomeTabCtrl');
 
     $scope.vote = playerService.voteForPlayer;
+
+    $scope.postToSlack = playerService.postToSlack;
+
 })
 
 .controller("ScoreboardTabCtrl", function ($scope, $rootScope, playerService) {
@@ -106,8 +109,8 @@ angular.module('ionicApp', ['ionic'])
     });
 })
 
-//.constant('API_END_POINT', 'http://hmbgascoreboardserver.azurewebsites.net')
-.constant('API_END_POINT', 'http://localhost:49376')
+.constant('API_END_POINT', 'http://hmbgascoreboardserver.azurewebsites.net')
+//.constant('API_END_POINT', 'http://localhost:49376')
 
 .service("playerService", function ($http, API_END_POINT) {
     // public methods
@@ -116,7 +119,7 @@ angular.module('ionicApp', ['ionic'])
     function getPlayers(callback) {
         $http({
             method: "GET",
-            url: API_END_POINT + "/Scoreboard"
+            url: API_END_POINT + "/Players"
         }).success(callback);
     }
 
@@ -124,10 +127,28 @@ angular.module('ionicApp', ['ionic'])
         $http.post(API_END_POINT + "/Vote/" + player.PlayerId);
     }
 
+    function postToSlack(player) {
+        var objectToPost =
+         {
+             token: "xoxp-6261658387-6261658403-6272659622-7f1736",
+             channel: "C067PK2U8",
+             text: player.FirstName.toString() + " just scored a point! Woohoo!",
+             username: "John Is a Robot"
+         };
+
+        $.ajax({
+            type: "POST",
+            url: "https://slack.com/api/chat.postMessage",
+            dataType: "application/JSON",
+            data: objectToPost
+        });
+    }
+
     // public api
     return {
         getPlayers: getPlayers,
-        voteForPlayer: voteForPlayer
+        voteForPlayer: voteForPlayer,
+        postToSlack: postToSlack
     }
 });
 

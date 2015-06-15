@@ -1,4 +1,4 @@
-﻿<html ng-app="ionicApp">
+﻿<html >
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
@@ -8,10 +8,11 @@
     <link href="bower_components/ionic/release/css/ionic.css" rel="stylesheet">
     <link href="css/app.css" rel="stylesheet">
     <script src="bower_components/ionic/release/js/ionic.bundle.js"></script>
+    <script src="js/app.js"></script>
 
 </head>
 
-<body>
+<body ng-app="ionicApp">
 
     <ion-nav-bar class="bar-positive">
         <ion-nav-back-button class="button-icon ion-arrow-left-c">
@@ -78,7 +79,7 @@
                     What do you win? Who knows?
                 </p>
 
-                <button class="button button-full button-positive" ng-click="vote(selectedPlayer)">
+                <button class="button button-full button-positive" ng-click="vote(selectedPlayer); postToSlack(selectedPlayer)">
                     <i class="icon ion-plus "></i>
                     Add Point
                 </button>
@@ -122,9 +123,9 @@
         </ion-view>
     </script>
 
-    <script src="js/app.js"></script>
-    <script src="cordova.js"></script>
 
+<script src="cordova.js"></script>
+<script src="bower_components/jquery/dist/jquery-1.11.3.js"></script>
 
 </body>
 </html>
