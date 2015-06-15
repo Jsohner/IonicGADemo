@@ -117,9 +117,13 @@
         <ion-view view-title="Questions">
             <ion-content padding="true">
 
-                <ul id="questionList" ng-repeat="question in questions">
-                    <li><a class="button-block" href="#/tab/questions">{{question.text}}</a></li>
-                    <li><a class="button-block" href="#/tab/questions">{{question.text}}</a></li>
+                <ul id="questionList" ng-repeat="question in questions" class="list">
+                    <li> 
+                        <p class="item" href="#/tab/questions">{{question.username}}</p>
+                        </br>
+                        <p class="item" href="#/tab/questions">{{question.text}}</p>    
+                    </li>
+                    
 
                 </ul>       
         

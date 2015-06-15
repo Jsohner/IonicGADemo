@@ -121,15 +121,9 @@ angular.module('ionicApp', ['ionic'])
     .controller("QuestionsTabCtrl", function ($scope, $rootScope, playerService) {
         console.log("QuestionsTabCtrl");
 
-
         playerService.getQuestions(function(data) {
             $scope.questions = data.messages;
-        });
-            
-            
-        
-
-
+        });                                
     })
 
 .constant('API_END_POINT', 'http://hmbgascoreboardserver.azurewebsites.net')
@@ -183,16 +177,7 @@ angular.module('ionicApp', ['ionic'])
             url: "https://slack.com/api/channels.history",
             params: query
         }).success(callback);
-
-
-       
-
-        //$.ajax({
-        //    type: "GET",
-        //    url: "https://slack.com/api/channels.history",
-        //    dataType: "application/JSON",
-        //    data: query
-        //}).always(callback);
+    
     }
 
     // public api
