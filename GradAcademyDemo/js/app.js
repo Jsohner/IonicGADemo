@@ -57,8 +57,8 @@ angular.module('ionicApp', ['ionic'])
           }
       });
 
-    window.serverUrl = "http://hmbgascoreboardserver.azurewebsites.net";
-    //window.serverUrl = "http://localhost:49376";
+    //window.serverUrl = "http://hmbgascoreboardserver.azurewebsites.net";
+    window.serverUrl = "http://localhost:49376";
 
 
     $urlRouterProvider.otherwise("/sign-in");
@@ -91,8 +91,7 @@ angular.module('ionicApp', ['ionic'])
     $scope.postToSlack = playerService.postToSlack;
     $scope.postYellToSlack = playerService.postYellToSlack;
     $scope.clearYellText = function() {
-        $scope.yellText = "";
-        alert("text should clear");
+        this.yellText = "";        
     };
 
     })
@@ -132,8 +131,8 @@ angular.module('ionicApp', ['ionic'])
         });                                
     })
 
-.constant('API_END_POINT', 'http://hmbgascoreboardserver.azurewebsites.net')
-//.constant('API_END_POINT', 'http://localhost:49376')
+//.constant('API_END_POINT', 'http://hmbgascoreboardserver.azurewebsites.net')
+.constant('API_END_POINT', 'http://localhost:49376')
 
 .service("playerService", function ($http, API_END_POINT) {
     // public methods
