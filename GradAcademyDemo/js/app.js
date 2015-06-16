@@ -85,16 +85,17 @@ angular.module('ionicApp', ['ionic'])
 .controller('HomeTabCtrl', function ($scope, $rootScope, playerService) {
     console.log('HomeTabCtrl');
 
-        $scope.yellText = "";
+    $scope.yellText = "";
     $scope.vote = playerService.voteForPlayer;
 
     $scope.postToSlack = playerService.postToSlack;
     $scope.postYellToSlack = playerService.postYellToSlack;
     $scope.clearYellText = function() {
         $scope.yellText = "";
-    }
+        alert("text should clear");
+    };
 
-})
+    })
 
 .controller("ScoreboardTabCtrl", function ($scope, $rootScope, playerService) {
     console.log("ScoreboardTabCtrl");
@@ -200,7 +201,7 @@ angular.module('ionicApp', ['ionic'])
 
         var yellEndings = [
             "like a howling banshee.",
-            "as " + genderPronoun + " loosened " + possesiveGenderPronoun + "necktie.",
+            "as " + genderPronoun + " loosened " + possesiveGenderPronoun + " necktie.",
             "at Jared.",
             "in a fit of rage.",
             "in a thick Australian accent.",
@@ -242,7 +243,7 @@ angular.module('ionicApp', ['ionic'])
              channel: "C067PK2U8",
              text: "\"" + yellText.toUpperCase() + "!!!\" " + yellVerb + " " + player.FirstName +" "+ yellEnding,
              username: player.FirstName,
-             icon_url: "http://store.bbcomcdn.com/images/store/prodimage/prod_prod910018/image_prodprod910018_largeImage_X_450_white.jpg"
+             icon_emoji: ":" + player.FirstName.toLowerCase() + ":"
          };
 
         $.ajax({
