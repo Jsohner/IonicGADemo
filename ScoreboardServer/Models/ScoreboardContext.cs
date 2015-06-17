@@ -9,7 +9,7 @@ namespace ScoreboardServer.Models
 {
     public class ScoreboardContext : DbContext
     {
-        public ScoreboardContext() : base("scoreboardDb") {}
+        public ScoreboardContext() : base("DefaultConnection") {}
 
         public DbSet<Player> Players { get; set; }
         public DbSet<Vote> Votes { get; set; }
