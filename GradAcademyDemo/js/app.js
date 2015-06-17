@@ -57,8 +57,8 @@ angular.module('ionicApp', ['ionic'])
           }
       });
 
-    //window.serverUrl = "http://hmbgascoreboardserver.azurewebsites.net";
-    window.serverUrl = "http://localhost:49376";
+    window.serverUrl = "http://hmbgascoreboardserver.azurewebsites.net";
+    //window.serverUrl = "http://localhost:49376";
 
 
     $urlRouterProvider.otherwise("/sign-in");
@@ -85,11 +85,16 @@ angular.module('ionicApp', ['ionic'])
 .controller('HomeTabCtrl', function ($scope, $rootScope, playerService) {
     console.log('HomeTabCtrl');
 
+    $scope.currentPoints = 0;
+    $scope.bonusMessage = "";
+    $scope.updateBonusMessage = playerService.updateBonusMessage;
+
     $scope.yellText = "";
     $scope.vote = playerService.voteForPlayer;
 
     $scope.postToSlack = playerService.postToSlack;
     $scope.postYellToSlack = playerService.postYellToSlack;
+    $scope.voteForWord = playerService.voteForWord;
     $scope.clearYellText = function() {
         this.yellText = "";        
     };
@@ -131,8 +136,8 @@ angular.module('ionicApp', ['ionic'])
         });                                
     })
 
-//.constant('API_END_POINT', 'http://hmbgascoreboardserver.azurewebsites.net')
-.constant('API_END_POINT', 'http://localhost:49376')
+.constant('API_END_POINT', 'http://hmbgascoreboardserver.azurewebsites.net')
+//.constant('API_END_POINT', 'http://localhost:49376')
 
 .service("playerService", function ($http, API_END_POINT) {
     // public methods
@@ -169,7 +174,6 @@ angular.module('ionicApp', ['ionic'])
             
         });
     }
-
 
     function postYellToSlack(player, yellText) {
 
@@ -252,6 +256,80 @@ angular.module('ionicApp', ['ionic'])
             data: objectToPost
 
         });
+
+    }
+
+    function calculateAdditionalBonuses(points, yellText) {
+        var multiplier = 1;
+        var bonus = 0;
+        yellText = yellText.toLowerCase();
+
+        if (yellText.indexOf("hmb") >= 0) {
+            bonus = bonus + 50;
+        }
+
+        if (yellText.indexOf("jared") >= 0) {
+            bonus = bonus + 50;
+        }
+
+        if (yellText.indexOf("hail miketron") >= 0) {
+            bonus = bonus + 1000;
+        }
+
+        points = points * multiplier + bonus;
+
+        return points;
+
+    }
+
+    function updateBonusMessage(yellText, points) {
+
+
+        yellText = yellText.toLowerCase();
+
+        this.bonusMessage = "";
+
+        if (yellText.indexOf("hmb") >= 0) {
+            this.bonusMessage = "You mentioned HMB! You earned 50 bonus points.";
+        }
+
+        if (yellText.indexOf("jared") >= 0) {
+            this.bonusMessage = "You mentioned Jared! I hope you had something nice to say. You earned 50 bonus points.";
+        }
+
+        if (yellText.indexOf("hail miketron") >= 0) {
+            this.bonusMessage = "HAIL MIKETRON. 1000 POINTS";
+        }
+
+        this.bonusMessage = this.bonusMessage 
+            + "\n" + "You earned " + points + " points total!";
+
+    }
+
+    function voteForWord(player, yellText) {
+
+        var points = 0;
+
+        points = yellText.length;
+
+        function countWords(str) {
+            return str.split(/\s+/).length;
+        }
+
+        var wordBonus = countWords(yellText) * 10;
+        if (wordBonus > 150) {
+            wordBonus = 150;
+        }
+
+        points = points + wordBonus;
+
+        points = calculateAdditionalBonuses(points, yellText);
+
+        for (var i = 0; i < points; i++) {
+            $http.post(API_END_POINT + "/Vote/" + player.PlayerId);
+        }
+
+        this.points = points;
     }
 
 
@@ -276,7 +354,9 @@ angular.module('ionicApp', ['ionic'])
         voteForPlayer: voteForPlayer,
         postToSlack: postToSlack,
         postYellToSlack: postYellToSlack,
-        getQuestions: getQuestions
+        voteForWord: voteForWord,
+        getQuestions: getQuestions,
+        updateBonusMessage: updateBonusMessage
     }
 });
 

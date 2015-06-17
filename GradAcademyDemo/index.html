@@ -83,7 +83,7 @@
                     What do you win? Who knows?
                 </p>
 
-                <button class="button button-full button-positive" ng-click="vote(selectedPlayer); postToSlack(selectedPlayer)">
+                <button class="button button-full button-positive" ng-click="vote(selectedPlayer); ">
                     <i class="icon ion-plus "></i>
                     Add Point
                 </button>
@@ -93,10 +93,12 @@
                         <input type="text" placeholder="Type Some Words!" ng-model="yellText" autocomplete="off">
                     </label>
                 </div>
-                <button class="button button-full button-positive" ng-click="postYellToSlack(selectedPlayer, yellText); clearYellText()">
+                <button class="button button-full button-positive" ng-click="postYellToSlack(selectedPlayer, yellText); voteForWord(selectedPlayer, yellText); updateBonusMessage(yellText, points); clearYellText(); ">
                     <i class="icon ion-plus "></i>
                     Enter text to earn points
                 </button>
+                
+                {{bonusMessage}}
 
             </ion-content>
         </ion-view>
