@@ -51,7 +51,7 @@ namespace ScoreboardServer.Controllers
 
             var cps = new ChatPostService();
             var jg = new JokeGenerator();
-            cps.PostToSlack(jg.GenerateJoke(player, "point for me"), player);
+            cps.PostToSlack(jg.GenerateJoke(player, yellText), player);
 
 
         }
