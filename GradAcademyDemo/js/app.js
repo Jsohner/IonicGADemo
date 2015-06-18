@@ -91,7 +91,7 @@ angular.module('ionicApp', ['ionic'])
 
     $scope.yellText = "";
     $scope.vote = playerService.voteForPlayer;
-    $scope.submitWord = playerService.submitWordForPlayer;
+    $scope.submitWordForPlayer = playerService.submitWordForPlayer;
 
     $scope.postToSlack = playerService.postToSlack;
     $scope.postYellToSlack = playerService.postYellToSlack;
@@ -156,7 +156,7 @@ angular.module('ionicApp', ['ionic'])
     }
 
     function submitWordForPlayer(player, yellText) {
-        $http.post(API_END_POINT + "/Word/" + player.PlayerId);
+        $http.post(API_END_POINT + "/Word/" + player.PlayerId +"/" + yellText);
         
     }
 

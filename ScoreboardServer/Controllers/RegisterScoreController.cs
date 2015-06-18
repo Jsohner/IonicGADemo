@@ -35,55 +35,24 @@ namespace ScoreboardServer.Controllers
             var player = _votePersister.FindPlayerBy(playerId);
             _votePersister.PersistVote(player);
 
-
-            using (var client = new HttpClient())
-            {
-                var values = new Dictionary<string, string>
-                {
-                   { "token", "xoxp-6261658387-6261658403-6272659622-7f1736" },
-                   { "channel", "C067PK2U8" },
-                   { "text", "this is coming from the c# ```And this is in code```"},
-                   { "username", player.FirstName},
-                   { "icon_url", "http://store.bbcomcdn.com/images/store/prodimage/prod_prod910018/image_prodprod910018_largeImage_X_450_white.jpg"},
-                   { "mrkdwn", "true"},
-                   { "mrkdwn_in", "text"}
-
-                };
-
-                var content = new FormUrlEncodedContent(values);
-
-                var response =  client.PostAsync("https://slack.com/api/chat.postMessage", content);
-
-                var responseString = response.Result.Content.ReadAsStringAsync();
-            }
+            var cps = new ChatPostService();     //TODO proper dependency-injection
+            var jg = new JokeGenerator();
+            cps.PostToSlack(jg.GenerateJoke(player, "point for me"), player);      //TODO currently it will post to slack everytime the button is clicked
+                                                                                   //I know the original intent was to periodically show a scoreboard for this, but we didn't have time to make that happen yet
+                                                                                   //comment out the PostToSlack call if you just want to add to the score
 
         }
 
-        [Route("Word/{playerId}")]
+        [Route("Word/{playerId}/{yellText}")]
         public void Post(int playerId, string yellText)
         {
             var player = _votePersister.FindPlayerBy(playerId);
             _votePersister.PersistVote(player);
 
+            var cps = new ChatPostService();
+            var jg = new JokeGenerator();
+            cps.PostToSlack(jg.GenerateJoke(player, "point for me"), player);
 
-            using (var client = new HttpClient())
-            {
-                var values = new Dictionary<string, string>
-                {
-                   { "token", "xoxp-6261658387-6261658403-6272659622-7f1736" },
-                   { "channel", "C067PK2U8" },
-                   { "text", yellText},
-                   { "username", player.FirstName},
-                   { "icon_url", ":" + yellText + ":"},
-                   
-                };
-
-                var content = new FormUrlEncodedContent(values);
-
-                var response = client.PostAsync("https://slack.com/api/chat.postMessage", content);
-
-                var responseString = response.Result.Content.ReadAsStringAsync();
-            }
 
         }
 
