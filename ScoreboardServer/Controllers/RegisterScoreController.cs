@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Web.Http;
 using ScoreboardServer.Models;
 using ScoreboardServer.Services;
@@ -30,6 +34,57 @@ namespace ScoreboardServer.Controllers
         {
             var player = _votePersister.FindPlayerBy(playerId);
             _votePersister.PersistVote(player);
+
+
+            using (var client = new HttpClient())
+            {
+                var values = new Dictionary<string, string>
+                {
+                   { "token", "xoxp-6261658387-6261658403-6272659622-7f1736" },
+                   { "channel", "C067PK2U8" },
+                   { "text", "this is coming from the c# ```And this is in code```"},
+                   { "username", player.FirstName},
+                   { "icon_url", "http://store.bbcomcdn.com/images/store/prodimage/prod_prod910018/image_prodprod910018_largeImage_X_450_white.jpg"},
+                   { "mrkdwn", "true"},
+                   { "mrkdwn_in", "text"}
+
+                };
+
+                var content = new FormUrlEncodedContent(values);
+
+                var response =  client.PostAsync("https://slack.com/api/chat.postMessage", content);
+
+                var responseString = response.Result.Content.ReadAsStringAsync();
+            }
+
+        }
+
+        [Route("Word/{playerId}")]
+        public void Post(int playerId, string yellText)
+        {
+            var player = _votePersister.FindPlayerBy(playerId);
+            _votePersister.PersistVote(player);
+
+
+            using (var client = new HttpClient())
+            {
+                var values = new Dictionary<string, string>
+                {
+                   { "token", "xoxp-6261658387-6261658403-6272659622-7f1736" },
+                   { "channel", "C067PK2U8" },
+                   { "text", yellText},
+                   { "username", player.FirstName},
+                   { "icon_url", ":" + yellText + ":"},
+                   
+                };
+
+                var content = new FormUrlEncodedContent(values);
+
+                var response = client.PostAsync("https://slack.com/api/chat.postMessage", content);
+
+                var responseString = response.Result.Content.ReadAsStringAsync();
+            }
+
         }
 
         [Route("Players/")]
@@ -52,6 +107,7 @@ namespace ScoreboardServer.Controllers
             });
 
             return players;
-        } 
+        }
+         
     }
 }

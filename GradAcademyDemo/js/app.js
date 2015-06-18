@@ -57,8 +57,8 @@ angular.module('ionicApp', ['ionic'])
           }
       });
 
-    window.serverUrl = "http://hmbgascoreboardserver.azurewebsites.net";
-    //window.serverUrl = "http://localhost:49376";
+    //window.serverUrl = "http://hmbgascoreboardserver.azurewebsites.net";
+    window.serverUrl = "http://localhost:49376";
 
 
     $urlRouterProvider.otherwise("/sign-in");
@@ -91,6 +91,7 @@ angular.module('ionicApp', ['ionic'])
 
     $scope.yellText = "";
     $scope.vote = playerService.voteForPlayer;
+    $scope.submitWord = playerService.submitWordForPlayer;
 
     $scope.postToSlack = playerService.postToSlack;
     $scope.postYellToSlack = playerService.postYellToSlack;
@@ -136,8 +137,8 @@ angular.module('ionicApp', ['ionic'])
         });                                
     })
 
-.constant('API_END_POINT', 'http://hmbgascoreboardserver.azurewebsites.net')
-//.constant('API_END_POINT', 'http://localhost:49376')
+//.constant('API_END_POINT', 'http://hmbgascoreboardserver.azurewebsites.net')
+.constant('API_END_POINT', 'http://localhost:49376')
 
 .service("playerService", function ($http, API_END_POINT) {
     // public methods
@@ -154,12 +155,17 @@ angular.module('ionicApp', ['ionic'])
         $http.post(API_END_POINT + "/Vote/" + player.PlayerId);
     }
 
+    function submitWordForPlayer(player, yellText) {
+        $http.post(API_END_POINT + "/Word/" + player.PlayerId);
+        
+    }
+
     function postToSlack(player) {
         var objectToPost =
          {
              token: "xoxp-6261658387-6261658403-6272659622-7f1736",
              channel: "C067PK2U8",
-             text: "*Robot John is dead. All hail Miketron*\nAnd " + player.FirstName + " _just scored a point._\n And this is some code: ```User john = new User();```", //player.FirstName.toString() + " just scored a point! Woohoo!",
+             text: "*Robot John is dead. All hail Miketron*\nAnd " + player.FirstName + " _just scored a point._\n And this is some code: ```User john = new User();```", 
              username: player.FirstName,
              icon_url: "http://store.bbcomcdn.com/images/store/prodimage/prod_prod910018/image_prodprod910018_largeImage_X_450_white.jpg",
              mrkdwn: true,
@@ -352,6 +358,7 @@ angular.module('ionicApp', ['ionic'])
     return {
         getPlayers: getPlayers,
         voteForPlayer: voteForPlayer,
+        submitWordForPlayer: submitWordForPlayer,
         postToSlack: postToSlack,
         postYellToSlack: postYellToSlack,
         voteForWord: voteForWord,
